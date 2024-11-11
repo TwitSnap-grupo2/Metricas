@@ -2,7 +2,7 @@ import {z } from 'zod';
 
 const registerSchema = z.object({
     success: z.boolean(),
-    method: z.string(),
+    method: z.enum(['email', 'google']),
     registrationTime: z.number(),
     location: z.string(),
 })

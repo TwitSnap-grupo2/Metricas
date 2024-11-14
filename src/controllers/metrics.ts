@@ -1,7 +1,8 @@
 import { Router, Request, Response, NextFunction } from "express";
-import {getRegisterSchema, postRegisterSchema} from "../utils/validationSchemas";
+import {getSchema, postLoginSchema, postRegisterSchema} from "../utils/validationSchemas";
 import  metricService from "../services/metrics";
 import { InsertRegister } from "../db/schemas/registerSchema";
+import { InsertLogin } from "../db/schemas/loginSchema";
 
 const router = Router();
 
@@ -18,7 +19,7 @@ router.post("/register", async (req, res, next) => {
 
 router.get("/register", async (req, res, next) => {
     try {
-        const registrationData = await getRegisterSchema.parse(req.query);
+        const registrationData = await getSchema.parse(req.query);
         const dateFrom = new Date(registrationData.from);
         const dateTo = new Date(registrationData.to);
         const result = await metricService.getRegistrationMetrics(dateFrom, dateTo);
@@ -28,6 +29,43 @@ router.get("/register", async (req, res, next) => {
         next(error);
     }  
 });
+
+
+router.post("/login", async (req, res, next) => {
+    try {
+        const loginData: InsertLogin = await postLoginSchema.parse(req.body);
+        const result = await metricService.postLoginMetric(loginData);
+        res.status(201).json(result);
+    } catch (error) {
+        next(error);
+    }
+}
+);
+
+router.get("/login", async (req, res, next) => {
+    try {
+        const loginData = await getSchema.parse(req.query);
+        const dateFrom = new Date(loginData.from);
+        const dateTo = new Date(loginData.to);
+        const result = await metricService.getLoginMetrics(dateFrom, dateTo);
+        res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }  
+}
+);
+
+router.post("block", async (req, res, next) => {
+    try {
+        const blockData: InsertBlock = await postBlockSchema.parse(req.body);
+        const result = await metricService.postBlockMetric(blockData);
+        res.status(201).json(result);
+    } catch (error) {
+        next(error);
+    }
+}
+
 
 export default router;
 

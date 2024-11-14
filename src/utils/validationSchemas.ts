@@ -7,9 +7,19 @@ export const postRegisterSchema = z.object({
     location: z.string(),
 })
 
-export const getRegisterSchema = z.object({
+export const getSchema = z.object({
     from: z.string().datetime(),
     to: z.string().datetime(),
 })
+
+export const postLoginSchema = z.object({
+    success: z.boolean(),
+    method: z.enum(['email', 'google']),
+    loginTime: z.number(),
+    location: z.string(),
+})
+
+export const postBlockSchema = z.object({
+    
 
 

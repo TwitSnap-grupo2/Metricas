@@ -4,6 +4,7 @@ import { db } from "../setup";
 import { and, avg, count, eq, gte, lte } from "drizzle-orm";
 import { InsertLogin, loginTable } from "../schemas/loginSchema";
 import { blockTable, InsertBlock } from "../schemas/blockSchema";
+import { InsertRecoveryPass, recoveryPassTable } from "../schemas/recoverPassSchema";
 
 const postRegistrationMetric = async (registrationData: InsertRegister) => {
     const res = await db.insert(registerTable).values(registrationData).returning()
@@ -30,7 +31,7 @@ const getRegistrationMetrics = async (dateFrom: Date, dateTo: Date) => {
 
     const averageRegistrationTimeResponse = await db.select({
         res: avg(registerTable.registrationTime)
-    }).from(registerTable);
+    }).from(registerTable).where(and(gte(registerTable.createdAt, dateFrom), lte(registerTable.createdAt, dateTo), eq(registerTable.success, true)));
 
     if (!averageRegistrationTimeResponse[0].res){
         return {
@@ -49,10 +50,17 @@ const getRegistrationMetrics = async (dateFrom: Date, dateTo: Date) => {
     .where(and(gte(registerTable.createdAt, dateFrom), lte(registerTable.createdAt, dateTo), eq(registerTable.success, true)))
     .groupBy(registerTable.method);
 
+    const locationCount = await db.select({
+        location: registerTable.location,
+        res: count()
+    }).from(registerTable).where(and(gte(registerTable.createdAt, dateFrom), lte(registerTable.createdAt, dateTo), eq(registerTable.success, true)))
+    .groupBy(registerTable.location);
+
     return {
         totalSuccess: totalSuccess[0].res,
         successRate: totalSuccess[0].res / total[0].res,
         averageRegistrationTime,
+        locationCount,
         emailCount: methodsCount.find((method) => method.method === 'email')?.res || 0,
         googleCount: methodsCount.find((method) => method.method === 'google')?.res || 0
     }
@@ -82,7 +90,7 @@ const getLoginMetrics = async(dateFrom: Date, dateTo: Date) => {
 
     const averageLoginTimeResponse = await db.select({
         res: avg(loginTable.loginTime)
-    }).from(loginTable);
+    }).from(loginTable).where(and(gte(loginTable.createdAt, dateFrom), lte(loginTable.createdAt, dateTo), eq(loginTable.success, true)));
 
     if (!averageLoginTimeResponse[0].res){
         return {
@@ -101,12 +109,21 @@ const getLoginMetrics = async(dateFrom: Date, dateTo: Date) => {
     .where(and(gte(loginTable.createdAt, dateFrom), lte(loginTable.createdAt, dateTo), eq(loginTable.success, true)))
     .groupBy(loginTable.method);
 
+    const locationCount = await db.select({
+        location: loginTable.location,
+        res: count()
+    }).from(loginTable).where(and(gte(loginTable.createdAt, dateFrom), lte(loginTable.createdAt, dateTo), eq(loginTable.success, true)))
+    .groupBy(loginTable.location);
+
+
     return {
         totalSuccess: totalSuccess[0].res,
         successRate: totalSuccess[0].res / total[0].res,
         averageLoginTime,
+        locationCount,
         emailCount: methodsCount.find((method) => method.method === 'email')?.res || 0,
         googleCount: methodsCount.find((method) => method.method === 'google')?.res || 0
+
     }
 }
 
@@ -130,7 +147,7 @@ const getBlockMetrics = async (dateFrom: Date, dateTo: Date) => {
     
     const averageBlockDurationResponse = await db.select({
         res: avg(blockTable.blockDuration)
-    }).from(blockTable);
+    }).from(blockTable).where(and(gte(blockTable.createdAt, dateFrom), lte(blockTable.createdAt, dateTo)));
 
     if (!averageBlockDurationResponse[0].res){
         return {
@@ -155,6 +172,58 @@ const getBlockMetrics = async (dateFrom: Date, dateTo: Date) => {
     }
 }
 
+const postRecoverPasswordMetric = async (recoverPasswordData: InsertRecoveryPass) => {
+    const res = await db.insert(recoveryPassTable).values(recoverPasswordData).returning()
+    if (res.length === 0) {
+        throw new Error("Failed to insert data");
+    }
+    return res[0];
+
+}
+
+const deleteRecoverPasswords = async () => {
+    await db.delete(recoveryPassTable);
+}
+
+const getRecoverPasswordMetrics = async (dateFrom: Date, dateTo: Date) => {
+    const totalSuccess = await db.select({
+        res: count()
+    }).from(recoveryPassTable)
+    .where(and(eq(recoveryPassTable.success, true), gte(recoveryPassTable.createdAt, dateFrom), lte(recoveryPassTable.createdAt, dateTo)));
+    
+    const total = await db.select({
+        res: count()
+    }).from(recoveryPassTable);
+
+    const averageRecoverPasswordTimeResponse = await db.select({
+        res: avg(recoveryPassTable.recoveryTime)
+    }).from(recoveryPassTable).where(and(gte(recoveryPassTable.createdAt, dateFrom), lte(recoveryPassTable.createdAt, dateTo), eq(recoveryPassTable.success, true)));
+
+    if (!averageRecoverPasswordTimeResponse[0].res){
+        return {
+            totalSuccess: totalSuccess[0].res,
+            successRate: totalSuccess[0].res / total[0].res,
+            averageRecoverPasswordTime: 0
+        }
+    }
+
+    const averageRecoverPasswordTime = parseInt(averageRecoverPasswordTimeResponse[0].res);
+
+    const methodsCount = await db.select({
+        method: recoveryPassTable.method,
+        res: count()
+    }).from(recoveryPassTable)
+    .where(and(gte(recoveryPassTable.createdAt, dateFrom), lte(recoveryPassTable.createdAt, dateTo), eq(recoveryPassTable.success, true)))
+    .groupBy(recoveryPassTable.method);
+
+    return {
+        total: total[0].res,
+        successRate: totalSuccess[0].res / total[0].res,
+        averageRecoverPasswordTime,
+        emailCount: methodsCount.find((method) => method.method === 'email')?.res || 0,
+        googleCount: methodsCount.find((method) => method.method === 'google')?.res || 0
+    }
+}
 
 export default {
     postRegistrationMetric,
@@ -165,5 +234,8 @@ export default {
     getLoginMetrics,
     deleteBlocks,
     postBlockMetric,
-    getBlockMetrics
+    getBlockMetrics,
+    postRecoverPasswordMetric,
+    deleteRecoverPasswords,
+    getRecoverPasswordMetrics
 }

@@ -369,7 +369,6 @@ describe("recover password metrics", () => {
         const response = await api.post("/api/metrics/recoverPassword").send({
             success: true,
             recoveryTime: 30,
-            method: 'email'
         }).expect(201);
         const body = response.body;
         expect(body.id).toBeDefined();
@@ -381,7 +380,6 @@ describe("recover password metrics", () => {
     test("cannot be posted with invalid data", async () => {
         await api.post("/api/metrics/recoverPassword").send({
             success: 'blue',
-            method: 'email',
             recoverTime: 30,
         }).expect(400);
     }
@@ -391,19 +389,16 @@ describe("recover password metrics", () => {
         await api.post("/api/metrics/recoverPassword").send({
             success: true,
             recoveryTime: 30,
-            method: 'email'
         });
 
         await api.post("/api/metrics/recoverPassword").send({
             success: true,
             recoveryTime: 10,
-            method: 'google'
         });
 
         await api.post("/api/metrics/recoverPassword").send({
             success: false,
             recoveryTime: 30,
-            method: 'email'
         });
 
         const res = await api.get("/api/metrics/recoverPassword").query({
@@ -414,11 +409,10 @@ describe("recover password metrics", () => {
 
         const body = res.body;
 
+
         expect(body.total).toBe(3);
         expect(body.successRate).toBe(2/3);
         expect(body.averageRecoverPasswordTime).toBe(20);
-        expect(body.emailCount).toBe(1);
-        expect(body.googleCount).toBe(1);
 
     });
 });

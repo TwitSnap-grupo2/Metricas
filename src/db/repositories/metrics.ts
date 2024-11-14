@@ -209,19 +209,10 @@ const getRecoverPasswordMetrics = async (dateFrom: Date, dateTo: Date) => {
 
     const averageRecoverPasswordTime = parseInt(averageRecoverPasswordTimeResponse[0].res);
 
-    const methodsCount = await db.select({
-        method: recoveryPassTable.method,
-        res: count()
-    }).from(recoveryPassTable)
-    .where(and(gte(recoveryPassTable.createdAt, dateFrom), lte(recoveryPassTable.createdAt, dateTo), eq(recoveryPassTable.success, true)))
-    .groupBy(recoveryPassTable.method);
-
     return {
         total: total[0].res,
         successRate: totalSuccess[0].res / total[0].res,
         averageRecoverPasswordTime,
-        emailCount: methodsCount.find((method) => method.method === 'email')?.res || 0,
-        googleCount: methodsCount.find((method) => method.method === 'google')?.res || 0
     }
 }
 

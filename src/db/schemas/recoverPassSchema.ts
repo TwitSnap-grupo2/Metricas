@@ -5,7 +5,6 @@ export const recoveryPassTable = pgTable("recover_password_metrics", {
     success: boolean("success").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     recoveryTime: integer("recovery_time").notNull(),
-    method: text("method").notNull(),
 });
 
 export type SelectRecoveryPass = typeof recoveryPassTable.$inferSelect;

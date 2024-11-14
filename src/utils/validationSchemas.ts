@@ -28,5 +28,4 @@ export const postBlockSchema = z.object({
 export const postRecoverPasswordSchema = z.object({
     success: z.boolean(),
     recoveryTime: z.number(),
-    method: z.enum(['email', 'google']),
 })

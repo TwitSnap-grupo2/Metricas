@@ -39,6 +39,7 @@
     "pino": "^9.5.0",
     "pino-pretty": "^7.0.0",
     "supertest": "^7.0.0",
+    "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
     "ts-node": "^10.9.2",
     "zod": "^3.23.8"

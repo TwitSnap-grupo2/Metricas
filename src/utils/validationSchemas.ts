@@ -20,6 +20,8 @@ export const postLoginSchema = z.object({
 })
 
 export const postBlockSchema = z.object({
-    
+    reason: z.string(),
+    blockDuration: z.number(),
+})
 
 

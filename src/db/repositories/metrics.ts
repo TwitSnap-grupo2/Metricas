@@ -3,6 +3,7 @@ import { InsertRegister, registerTable } from "../schemas/registerSchema";
 import { db } from "../setup";
 import { and, avg, count, eq, gte, lte } from "drizzle-orm";
 import { InsertLogin, loginTable } from "../schemas/loginSchema";
+import { blockTable, InsertBlock } from "../schemas/blockSchema";
 
 const postRegistrationMetric = async (registrationData: InsertRegister) => {
     const res = await db.insert(registerTable).values(registrationData).returning()
@@ -109,7 +110,50 @@ const getLoginMetrics = async(dateFrom: Date, dateTo: Date) => {
     }
 }
 
+const postBlockMetric = async (blockData: InsertBlock) => {
+    const res = await db.insert(blockTable).values(blockData).returning()
+    if (res.length === 0) {
+        throw new Error("Failed to insert data");
+    }
+    return res[0];
+}
 
+const deleteBlocks = async () => {
+    await db.delete(blockTable);
+}
+
+const getBlockMetrics = async (dateFrom: Date, dateTo: Date) => {
+    const total = await db.select({
+        res: count()
+    }).from(blockTable)
+    .where(and(gte(blockTable.createdAt, dateFrom), lte(blockTable.createdAt, dateTo)));
+    
+    const averageBlockDurationResponse = await db.select({
+        res: avg(blockTable.blockDuration)
+    }).from(blockTable);
+
+    if (!averageBlockDurationResponse[0].res){
+        return {
+            totalBlocks: total[0].res,
+            averageBlockDuration: 0
+        }
+    }
+
+    const averageBlockDuration = parseInt(averageBlockDurationResponse[0].res);
+
+    const reasonsCount = await db.select({
+        reason: blockTable.reason,
+        res: count()
+    }).from(blockTable)
+    .where(and(gte(blockTable.createdAt, dateFrom), lte(blockTable.createdAt, dateTo)))
+    .groupBy(blockTable.reason);
+
+    return {
+        totalBlocks: total[0].res,
+        averageBlockDuration,
+        reasonsCount
+    }
+}
 
 
 export default {
@@ -118,5 +162,8 @@ export default {
     getRegistrationMetrics,
     postLoginMetric,
     deleteLogins,
-    getLoginMetrics
+    getLoginMetrics,
+    deleteBlocks,
+    postBlockMetric,
+    getBlockMetrics
 }

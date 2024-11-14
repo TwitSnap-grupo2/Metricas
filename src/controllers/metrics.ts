@@ -1,8 +1,9 @@
 import { Router, Request, Response, NextFunction } from "express";
-import {getSchema, postLoginSchema, postRegisterSchema} from "../utils/validationSchemas";
+import {getSchema, postBlockSchema, postLoginSchema, postRegisterSchema} from "../utils/validationSchemas";
 import  metricService from "../services/metrics";
 import { InsertRegister } from "../db/schemas/registerSchema";
 import { InsertLogin } from "../db/schemas/loginSchema";
+import { InsertBlock } from "../db/schemas/blockSchema";
 
 const router = Router();
 
@@ -56,7 +57,7 @@ router.get("/login", async (req, res, next) => {
 }
 );
 
-router.post("block", async (req, res, next) => {
+router.post("/block", async (req, res, next) => {
     try {
         const blockData: InsertBlock = await postBlockSchema.parse(req.body);
         const result = await metricService.postBlockMetric(blockData);
@@ -65,6 +66,21 @@ router.post("block", async (req, res, next) => {
         next(error);
     }
 }
+);
+
+router.get("/block", async (req, res, next) => {
+    try {
+        const blockData = await getSchema.parse(req.query);
+        const dateFrom = new Date(blockData.from);
+        const dateTo = new Date(blockData.to);
+        const result = await metricService.getBlockMetrics(dateFrom, dateTo);
+        res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }  
+}
+)
 
 
 export default router;

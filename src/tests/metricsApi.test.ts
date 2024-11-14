@@ -186,4 +186,75 @@ describe("login metrics", () => {
     });
 })
 
+describe("block metrics", () => {
 
+    beforeEach(async () => {
+        await metricsRepository.deleteBlocks();
+      });
+
+    test("can be posted", async () => {
+        const response = await api.post("/api/metrics/block").send({
+            reason: 'spam',
+            blockDuration: 30
+        }).expect(201);
+        const body = response.body;
+        expect(body.id).toBeDefined();
+        expect(body.createdAt).toBeDefined();
+        expect(body.reason).toBe('spam');
+        expect(body.blockDuration).toBe(30);
+    }
+    );
+
+    test("cannot be posted with invalid data", async () => {
+        await api.post("/api/metrics/block").send({
+            reason: 'spam',
+        }).expect(400);
+    }
+    );
+
+    test("can be obtained", async () => {
+        await api.post("/api/metrics/block").send({
+            reason: 'spam',
+            blockDuration: 30
+        });
+
+        await api.post("/api/metrics/block").send({
+            reason: 'spam',
+            blockDuration: 10
+        });
+
+        await api.post("/api/metrics/block").send({
+            reason: 'explicit content',
+            blockDuration: 20
+        });
+
+        const res = await api.get("/api/metrics/block").query(
+            {
+                from: new Date(0).toISOString(),
+                to: new Date().toISOString(),
+            }
+        ).expect(200);
+
+        const body = res.body;
+
+        expect(body.totalBlocks).toBe(3);
+
+        expect(body.averageBlockDuration).toBe(20);
+
+        expect(body.reasonsCount).toEqual([
+            {
+                reason: 'explicit content',
+                res: 1
+            },
+            {
+                reason: 'spam',
+                res: 2
+            },
+            
+        ]);
+
+
+    }
+    );
+    
+})

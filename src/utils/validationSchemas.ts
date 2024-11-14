@@ -1,10 +1,15 @@
 import {z } from 'zod';
 
-const registerSchema = z.object({
+export const postRegisterSchema = z.object({
     success: z.boolean(),
     method: z.enum(['email', 'google']),
     registrationTime: z.number(),
     location: z.string(),
 })
 
-export default registerSchema;
+export const getRegisterSchema = z.object({
+    from: z.string().datetime(),
+    to: z.string().datetime(),
+})
+
+

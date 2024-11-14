@@ -36,4 +36,82 @@ describe("register metrics", () => {
         }).expect(400);
     }
     );
+
+    test("can be obtained with all methods", async () => {
+        await api.post("/api/metrics/register").send({
+            success: true,
+            method: 'email',
+            registrationTime: 30,
+            location: 'ARG'
+        });
+
+        await api.post("/api/metrics/register").send({
+            success: true,
+            method: 'google',
+            registrationTime: 10,
+            location: 'ARG'
+        });
+
+        await api.post("/api/metrics/register").send({
+            success: false,
+            method: 'email',
+            registrationTime: 30,
+            location: 'BRA'
+        });
+
+
+
+        const res = await api.get("/api/metrics/register").query({
+            from: new Date(0).toISOString(),
+            to: new Date().toISOString(),
+
+        }).expect(200);
+
+        const body = res.body;
+
+        expect(body.totalSuccess).toBe(2);
+        expect(body.successRate).toBe(2/3);
+        expect(body.averageRegistrationTime).toBe(23);
+    });
+
+    test("methods can be counted", async () => {
+        await api.post("/api/metrics/register").send({
+            success: true,
+            method: 'email',
+            registrationTime: 30,
+            location: 'ARG'
+        });
+
+        await api.post("/api/metrics/register").send({
+            success: true,
+            method: 'google',
+            registrationTime: 10,
+            location: 'ARG'
+        });
+
+        await api.post("/api/metrics/register").send({
+            success: true,
+            method: 'email',
+            registrationTime: 30,
+            location: 'BRA'
+        });
+        await api.post("/api/metrics/register").send({
+            success: false,
+            method: 'email',
+            registrationTime: 30,
+            location: 'BRA'
+        });
+
+        const res = await api.get("/api/metrics/register").query({
+            from: new Date(0).toISOString(),
+            to: new Date().toISOString(),
+
+        }).expect(200);
+
+        const body = res.body;
+
+        expect(body.emailCount).toBe(2);
+        expect(body.googleCount).toBe(1);
+    }
+    );
 })

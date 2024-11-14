@@ -6,6 +6,11 @@ const postRegistrationMetric = async (registrationData: InsertRegister) => {
 
 }
 
+const getRegistrationMetrics = async (dateFrom: Date, dateTo: Date) => {
+    return await db.getRegistrationMetrics(dateFrom, dateTo);
+}
+
 export default {
     postRegistrationMetric,
+    getRegistrationMetrics
 }

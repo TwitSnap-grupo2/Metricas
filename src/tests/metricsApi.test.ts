@@ -63,8 +63,8 @@ describe("register metrics", () => {
 
 
         const res = await api.get("/api/metrics/register").query({
-            from: new Date(0).toISOString(),
-            to: new Date().toISOString(),
+            date_from: new Date(0).toISOString(),
+            date_to: new Date().toISOString(),
 
         }).expect(200);
 
@@ -104,8 +104,8 @@ describe("register metrics", () => {
         });
 
         const res = await api.get("/api/metrics/register").query({
-            from: new Date(0).toISOString(),
-            to: new Date().toISOString(),
+            date_from: new Date(0).toISOString(),
+            date_to: new Date().toISOString(),
 
         }).expect(200);
 
@@ -145,8 +145,8 @@ describe("register metrics", () => {
         });
 
         const res = await api.get("/api/metrics/register").query({
-            from: new Date(0).toISOString(),
-            to: new Date().toISOString(),
+            date_from: new Date(0).toISOString(),
+            date_to: new Date().toISOString(),
 
         }).expect(200);
 
@@ -220,8 +220,8 @@ describe("login metrics", () => {
         });
 
         const res = await api.get("/api/metrics/login").query({
-            from: new Date(0).toISOString(),
-            to: new Date().toISOString(),
+            date_from: new Date(0).toISOString(),
+            date_to: new Date().toISOString(),
 
         }).expect(200);
 
@@ -264,8 +264,8 @@ describe("login metrics", () => {
         });
 
         const res = await api.get("/api/metrics/login").query({
-            from: new Date(0).toISOString(),
-            to: new Date().toISOString(),
+            date_from: new Date(0).toISOString(),
+            date_to: new Date().toISOString(),
 
         }).expect(200);
 
@@ -330,8 +330,8 @@ describe("block metrics", () => {
 
         const res = await api.get("/api/metrics/block").query(
             {
-                from: new Date(0).toISOString(),
-                to: new Date().toISOString(),
+                date_from: new Date(0).toISOString(),
+                date_to: new Date().toISOString(),
             }
         ).expect(200);
 
@@ -402,8 +402,8 @@ describe("recover password metrics", () => {
         });
 
         const res = await api.get("/api/metrics/recoverPassword").query({
-            from: new Date(0).toISOString(),
-            to: new Date().toISOString(),
+            date_from: new Date(0).toISOString(),
+            date_to: new Date().toISOString(),
 
         }).expect(200);
 

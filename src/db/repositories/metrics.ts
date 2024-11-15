@@ -201,7 +201,7 @@ const getRecoverPasswordMetrics = async (dateFrom: Date, dateTo: Date) => {
 
     if (!averageRecoverPasswordTimeResponse[0].res){
         return {
-            totalSuccess: totalSuccess[0].res,
+            total: total[0].res,
             successRate: totalSuccess[0].res / total[0].res,
             averageRecoverPasswordTime: 0
         }

@@ -21,8 +21,8 @@ router.post("/register", async (req, res, next) => {
 router.get("/register", async (req, res, next) => {
     try {
         const registrationData = await getSchema.parse(req.query);
-        const dateFrom = new Date(registrationData.from);
-        const dateTo = new Date(registrationData.to);
+        const dateFrom = new Date(registrationData.date_from);
+        const dateTo = new Date(registrationData.date_to);
         const result = await metricService.getRegistrationMetrics(dateFrom, dateTo);
         res.status(200).json(result);
     } catch (error) {
@@ -45,8 +45,8 @@ router.post("/login", async (req, res, next) => {
 router.get("/login", async (req, res, next) => {
     try {
         const loginData = await getSchema.parse(req.query);
-        const dateFrom = new Date(loginData.from);
-        const dateTo = new Date(loginData.to);
+        const dateFrom = new Date(loginData.date_from);
+        const dateTo = new Date(loginData.date_to);
         const result = await metricService.getLoginMetrics(dateFrom, dateTo);
         res.status(200).json(result);
     } catch (error) {
@@ -69,8 +69,8 @@ router.post("/block", async (req, res, next) => {
 router.get("/block", async (req, res, next) => {
     try {
         const blockData = await getSchema.parse(req.query);
-        const dateFrom = new Date(blockData.from);
-        const dateTo = new Date(blockData.to);
+        const dateFrom = new Date(blockData.date_from);
+        const dateTo = new Date(blockData.date_to);
         const result = await metricService.getBlockMetrics(dateFrom, dateTo);
         res.status(200).json(result);
     } catch (error) {
@@ -93,8 +93,8 @@ router.post("/recoverPassword", async (req, res, next) => {
 router.get("/recoverPassword", async (req, res, next) => {
     try {
         const recoverPasswordData = await getSchema.parse(req.query);
-        const dateFrom = new Date(recoverPasswordData.from);
-        const dateTo = new Date(recoverPasswordData.to);
+        const dateFrom = new Date(recoverPasswordData.date_from);
+        const dateTo = new Date(recoverPasswordData.date_to);
         const result = await metricService.getRecoverPasswordMetrics(dateFrom, dateTo);
         res.status(200).json(result);
     } catch (error) {

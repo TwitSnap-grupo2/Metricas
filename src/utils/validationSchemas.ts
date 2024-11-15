@@ -8,8 +8,8 @@ export const postRegisterSchema = z.object({
 })
 
 export const getSchema = z.object({
-    from: z.string().datetime(),
-    to: z.string().datetime(),
+    date_from: z.string().datetime(),
+    date_to: z.string().datetime(),
 })
 
 export const postLoginSchema = z.object({

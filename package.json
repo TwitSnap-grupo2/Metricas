@@ -7,7 +7,8 @@
     "build": "tsc",
     "start": "NODE_ENV=production npx drizzle-kit --config=./dist/drizzle.config.js generate && NODE_ENV=production npx drizzle-kit migrate --config=./dist/drizzle.config.js && NODE_ENV=production node dist/src/index.js --config=./dist/drizzle.config.js",
     "dev": "NODE_ENV=development npx drizzle-kit generate && NODE_ENV=development npx drizzle-kit migrate && NODE_ENV=development nodemon --exec ts-node src/index.ts",
-    "test": "NODE_ENV=test drizzle-kit generate && NODE_ENV=test drizzle-kit migrate && NODE_ENV=test jest --verbose --runInBand"
+    "test": "NODE_ENV=test drizzle-kit generate && NODE_ENV=test drizzle-kit migrate && NODE_ENV=test jest --verbose --runInBand",
+    "test:ci": "nyc --reporter=lcov npm test"
   },
   "author": "",
   "license": "ISC",

@@ -7,7 +7,12 @@ const POSTGRES_URL =
     ? process.env.TEST_POSTGRES_URL
     : process.env.POSTGRES_URL;
 
+const SERVICE_ID = process.env.SERVICE_ID;
+const REGISTRY_URL = process.env.REGISTRY_URL;
+
 export default {
   PORT,
   POSTGRES_URL,
+  SERVICE_ID,
+  REGISTRY_URL,
 };

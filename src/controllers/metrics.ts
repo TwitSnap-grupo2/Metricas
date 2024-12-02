@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import {
   getSchema,
+  newApiKeySchema,
   postBlockSchema,
   postLoginSchema,
   postRecoverPasswordSchema,
@@ -108,8 +109,15 @@ router.get("/recoverPassword", async (req, res, next) => {
   }
 });
 
-router.post("/ping", async (req, res) => {
-  res.status(200).end();
+router.put("/apiKey", async (req, res, next) => {
+  try {
+    const data = newApiKeySchema.parse(req.body);
+    process.env["API_KEY"] = data.apiKey;
+    console.log("New apiKey: ", process.env["API_KEY"]);
+    res.status(200).json({ apiKey: data.apiKey });
+  } catch (err: unknown) {
+    next(err);
+  }
 });
 
 export default router;

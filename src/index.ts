@@ -15,12 +15,14 @@ app.listen(config.PORT, async () => {
     if (!response.ok) {
       logger.error("Error trying to get API Key");
       // process.exit(1);
+    } else{
+      const data = await response.json();
+      logger.info("API_KEY fetched successfully");
+      process.env["API_KEY"] = data!.apiKey;
+      console.log("New API_KEY:", process.env["API_KEY"]);
+
     }
 
-    const data = await response.json();
-    logger.info("API_KEY fetched successfully");
-    process.env["API_KEY"] = data!.apiKey;
-    console.log("New API_KEY:", process.env["API_KEY"]);
   } catch (error) {
     logger.error("API Key fetch error:", error);
     // process.exit(1);

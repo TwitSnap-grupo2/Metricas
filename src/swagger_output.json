@@ -14,82 +14,331 @@
   "paths": {
     "/api/metrics/register": {
       "post": {
-        "description": "",
+        "summary": "Register User",
+        "requestBody": {
+          "description": "User registration data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PostRegister" }
+            }
+          }
+        },
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Registration metric created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SelectRegister" }
+              }
+            }
           }
         }
       },
       "get": {
-        "description": "",
+        "summary": "Get Registration Metrics",
+        "parameters": [
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "Start date for filtering metrics"
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "End date for filtering metrics"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "List of registration metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/SelectRegister" }
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/metrics/login": {
       "post": {
-        "description": "",
+        "summary": "Log User Login",
+        "requestBody": {
+          "description": "User login data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PostLogin" }
+            }
+          }
+        },
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Login metric created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SelectLogin" }
+              }
+            }
           }
         }
       },
       "get": {
-        "description": "",
+        "summary": "Get Login Metrics",
+        "parameters": [
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "Start date for filtering metrics"
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "End date for filtering metrics"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "List of login metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/SelectLogin" }
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/metrics/block": {
       "post": {
-        "description": "",
+        "summary": "Log User Block",
+        "requestBody": {
+          "description": "User block data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PostBlock" }
+            }
+          }
+        },
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Block metric created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SelectBlock" }
+              }
+            }
           }
         }
       },
       "get": {
-        "description": "",
+        "summary": "Get Block Metrics",
+        "parameters": [
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "Start date for filtering metrics"
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "End date for filtering metrics"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "List of block metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/SelectBlock" }
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/metrics/recoverPassword": {
       "post": {
-        "description": "",
+        "summary": "Log Password Recovery",
+        "requestBody": {
+          "description": "Password recovery data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PostRecoverPassword" }
+            }
+          }
+        },
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Password recovery metric created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SelectRecoveryPass" }
+              }
+            }
           }
         }
       },
       "get": {
-        "description": "",
+        "summary": "Get Password Recovery Metrics",
+        "parameters": [
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "Start date for filtering metrics"
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "End date for filtering metrics"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "List of password recovery metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/SelectRecoveryPass" }
+                }
+              }
+            }
           }
         }
       }
     }
   },
   "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+    "schemas": {
+      "PostRegister": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "method": {
+            "type": "string",
+            "enum": ["email", "google"]
+          },
+          "registrationTime": { "type": "number" },
+          "location": { "type": "string" }
+        }
+      },
+      "PostLogin": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "method": {
+            "type": "string",
+            "enum": ["email", "google"]
+          },
+          "loginTime": { "type": "number" },
+          "location": { "type": "string" }
+        }
+      },
+      "PostBlock": {
+        "type": "object",
+        "properties": {
+          "reason": { "type": "string" },
+          "blockDuration": { "type": "number" }
+        }
+      },
+      "PostRecoverPassword": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "recoveryTime": { "type": "number" }
+        }
+      },
+      "SelectRegister": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "success": { "type": "boolean" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "method": { "type": "string", "enum": ["email", "google"] },
+          "registrationTime": {
+            "type": "integer",
+            "description": "Time taken for registration in seconds"
+          },
+          "location": { "type": "string" }
+        }
+      },
+      "SelectLogin": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "success": { "type": "boolean" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "method": { "type": "string", "enum": ["email", "google"] },
+          "loginTime": {
+            "type": "integer",
+            "description": "Time taken for login in seconds"
+          },
+          "location": { "type": "string" }
+        }
+      },
+      "SelectBlock": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "reason": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "blockDuration": {
+            "type": "integer",
+            "description": "Block duration in seconds"
+          }
+        }
+      },
+      "SelectRecoveryPass": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "success": { "type": "boolean" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "recoveryTime": {
+            "type": "integer",
+            "description": "Time taken for password recovery in seconds"
+          }
+        }
+      },
+      "InsertRecoveryPass": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "recoveryTime": {
+            "type": "integer",
+            "description": "Time taken for password recovery in seconds"
+          }
+        },
+        "required": ["success", "recoveryTime"]
       }
     }
   }

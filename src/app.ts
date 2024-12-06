@@ -1,9 +1,9 @@
-import express from "express";
+  import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import { routes } from "./controllers";
-// import swaggerOutput from "./swagger_output.json";
+import swaggerOutput from "./swagger_output.json";
 import {
   errorMiddleware,
   unknownEndpoint,
@@ -13,6 +13,8 @@ import {
 dotenv.config();
 
 const app = express();
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 
 if (!(process.env.NODE_ENV === "test")) {
   app.use(morgan("combined"));
@@ -33,5 +35,4 @@ app.use("/", routes);
 app.use(errorMiddleware);
 app.use(unknownEndpoint);
 
-// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 export default app;
